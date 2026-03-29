@@ -70,12 +70,17 @@ public class ExcelTemplateGenerator {
     // Genereer bestand voor elke rij
     int rijNummer = 1;
     for (Map<String, String> rijData : excelData) {
-      String outputBestand = outputDirectory + File.separator + outputPrefix + "_" + rijNummer + ".txt";
-
+      String extentsion = "txt";
       // Maak context met data uit de rij
       VelocityContext context = new VelocityContext();
       for (Map.Entry<String, String> entry : rijData.entrySet()) {
         context.put(entry.getKey(), entry.getValue());
+        if (entry.getKey().toUpperCase().contains("PREFIX")) {
+          outputPrefix = entry.getValue();
+        }
+        if (entry.getKey().toUpperCase().contains("EXT")) {
+          extentsion = entry.getValue();
+        }
       }
 
       // Voeg eventueel extra metadata toe
@@ -83,6 +88,7 @@ public class ExcelTemplateGenerator {
       context.put("huidigeDatum", new Date());
 
       // Genereer output
+      String outputBestand = outputDirectory + File.separator + outputPrefix + "_" + rijNummer + "." + extentsion;
       genereerBestandVanTemplate(template, context, outputBestand);
 
       System.out.println("Gegenereerd: " + outputBestand);
